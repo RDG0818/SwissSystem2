@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 #include "addplayerdialog.h"
 #include "tournament.h"
+#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -30,11 +31,33 @@ void MainWindow::on_pushButton_2_clicked()
 {
     tournament tournament;
     tournament.setTableRow(((ui->listWidget->count()) / 2) + (ui->listWidget->count() % 2));
-    std::vector<QString> info;
+    std::vector<QString> nameVector;
     for (int i = 0; i < ui->listWidget->count(); i++) {
-        info.push_back(ui->listWidget->item(i)->text());
+        nameVector.push_back(ui->listWidget->item(i)->text());
     }
-    tournament.setTableInfo(info);
+    std::vector<int> rating;
+    for (int i = 0; i < ui->listWidget_2->count(); i++) {
+        rating.push_back(ui->listWidget_2->item(i)->text().toInt());
+    }
+    // Sorting Algorithm for the Players
+    std::vector<QString> sortedNameVector;
+    std::vector<int> sortedRating;
+    int iterations = rating.size();
+    for (int j = 0; j < iterations; j++) {
+        int highest = rating[0];
+        int index = 0;
+        for (int i = 0; i < rating.size(); i++) {
+            if (rating[i] > highest) {
+                highest = rating[i];
+                index = i;
+            }
+        }
+        sortedRating.push_back(highest);
+        rating.erase(rating.begin() + index);
+        sortedNameVector.push_back(nameVector[index]);
+        nameVector.erase(nameVector.begin() + index);
+    }
+    tournament.setTableInfo(sortedNameVector);
     tournament.exec();
 }
 
