@@ -25,6 +25,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         addplayerdialog.h addplayerdialog.cpp addplayerdialog.ui
         tournament.h tournament.cpp tournament.ui
+        settings.h settings.cpp settings.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET SwissSystem APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

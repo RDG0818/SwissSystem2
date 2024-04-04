@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "addplayerdialog.h"
+#include "settings.h"
 #include "tournament.h"
-#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -59,5 +59,18 @@ void MainWindow::on_pushButton_2_clicked()
     }
     tournament.setTableInfo(sortedNameVector);
     tournament.exec();
+}
+
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    settings setting;
+    setting.exec();
+    tournamentName = setting.getTournamentName();
+    organizer = setting.getOrganizer();
+    timeControl = setting.getTimeControl();
+    location = setting.getLocation();
+    rounds = setting.getRounds();
+    date = setting.getDate();
 }
 
