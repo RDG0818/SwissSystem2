@@ -15,8 +15,8 @@ tournament::~tournament()
 
 void tournament::setTableInfo(const std::vector<QString> &info) {
     for (int i = 0; i < ui->tableWidget->rowCount(); i++) {
-        QTableWidgetItem *item = new QTableWidgetItem(info[2 * i]);
-        QTableWidgetItem *item2 = new QTableWidgetItem(info[2 * i + 1]);
+        QTableWidgetItem *item = new QTableWidgetItem(info[i]);
+        QTableWidgetItem *item2 = new QTableWidgetItem(info[i + info.size() / 2]);
         ui->tableWidget->setItem(i, 2, item);
         ui->tableWidget->setItem(i, 5, item2);
     }

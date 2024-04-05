@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>766</width>
-    <height>577</height>
+    <width>450</width>
+    <height>350</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>670</x>
-     <y>20</y>
+     <x>330</x>
+     <y>30</y>
      <width>81</width>
      <height>241</height>
     </rect>
@@ -33,9 +33,9 @@
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>20</y>
-     <width>113</width>
-     <height>24</height>
+     <y>25</y>
+     <width>125</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -51,6 +51,9 @@
    <property name="text">
     <string>Tournament Name</string>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
   </widget>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
@@ -64,14 +67,17 @@
    <property name="text">
     <string>Organizer</string>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_2">
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>70</y>
-     <width>113</width>
-     <height>24</height>
+     <y>75</y>
+     <width>125</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -87,14 +93,17 @@
    <property name="text">
     <string>Time Control </string>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_3">
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>130</y>
-     <width>113</width>
-     <height>24</height>
+     <y>125</y>
+     <width>125</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -110,14 +119,17 @@
    <property name="text">
     <string>Location</string>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_4">
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>180</y>
-     <width>113</width>
-     <height>24</height>
+     <y>175</y>
+     <width>125</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -133,6 +145,9 @@
    <property name="text">
     <string>Rounds</string>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
   </widget>
   <widget class="QLabel" name="label_6">
    <property name="geometry">
@@ -146,14 +161,17 @@
    <property name="text">
     <string>Date</string>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_5">
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>230</y>
-     <width>113</width>
-     <height>24</height>
+     <y>225</y>
+     <width>125</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -161,9 +179,9 @@
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>280</y>
-     <width>113</width>
-     <height>24</height>
+     <y>275</y>
+     <width>125</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>
