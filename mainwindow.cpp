@@ -3,6 +3,7 @@
 #include "addplayerdialog.h"
 #include "settings.h"
 #include "tournament.h"
+#include "person.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,40 +25,42 @@ void MainWindow::on_pushButton_clicked()
     QString rating = window.getRating();
     ui->listWidget->addItem(name);
     ui->listWidget_2->addItem(rating);
+    string stdname = name.toStdString();
+    int stdrating = rating.toInt();
+    Person person(stdname, stdrating);
+    people.push_back(person);
+
 }
 
 
 void MainWindow::on_pushButton_2_clicked()
 {
     tournament tournament;
-    tournament.setTableRow(((ui->listWidget->count()) / 2) + (ui->listWidget->count() % 2));
-    std::vector<QString> nameVector;
-    for (int i = 0; i < ui->listWidget->count(); i++) {
-        nameVector.push_back(ui->listWidget->item(i)->text());
+    tournament.setPeople(people);
+    if(people.size() % 2 == 0) {
+        tournament.setRows(people.size() / 2);
     }
-    std::vector<int> rating;
-    for (int i = 0; i < ui->listWidget_2->count(); i++) {
-        rating.push_back(ui->listWidget_2->item(i)->text().toInt());
+    else {
+        tournament.setRows((people.size() / 2) + 1);
     }
-    // Sorting Algorithm for the Players
-    std::vector<QString> sortedNameVector;
-    std::vector<int> sortedRating;
-    int iterations = rating.size();
-    for (int j = 0; j < iterations; j++) {
-        int highest = rating[0];
-        int index = 0;
-        for (int i = 0; i < rating.size(); i++) {
-            if (rating[i] > highest) {
-                highest = rating[i];
-                index = i;
+    // Sorting Algo
+    for(int i = 0; i < people.size() - 1; i++)
+    {
+        for(int j = 0; j < people.size() - i - 1; j++)
+        {
+            if(people.at(j).getRating() < people.at(j+1).getRating())
+            {
+                Person temp = people[j];
+
+                people[j] = people[j + 1];
+                people[j + 1] = temp;
             }
         }
-        sortedRating.push_back(highest);
-        rating.erase(rating.begin() + index);
-        sortedNameVector.push_back(nameVector[index]);
-        nameVector.erase(nameVector.begin() + index);
     }
-    tournament.setTableInfo(sortedNameVector);
+    for (int i = 0; i < people.size(); i++) {
+        tournament.setCell(i, 1, people[i].getName());
+        tournament.setCell(i, 3, people[people.size() - 1 - i].getName());
+    }
     tournament.exec();
 }
 

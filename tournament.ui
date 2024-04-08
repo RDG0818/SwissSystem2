@@ -13,48 +13,60 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
+  <widget class="QPushButton" name="pushButton_2">
    <property name="geometry">
     <rect>
-     <x>640</x>
+     <x>570</x>
      <y>10</y>
-     <width>81</width>
-     <height>241</height>
+     <width>151</width>
+     <height>91</height>
     </rect>
    </property>
-   <property name="orientation">
-    <enum>Qt::Vertical</enum>
+   <property name="text">
+    <string>View Leaderboard</string>
    </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+  </widget>
+  <widget class="QPushButton" name="pushButton_3">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>480</y>
+     <width>161</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Next Round</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>560</x>
+     <y>440</y>
+     <width>101</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Current Round: 1</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QTableWidget" name="tableWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>80</y>
-     <width>661</width>
+     <x>20</x>
+     <y>30</y>
+     <width>431</width>
      <height>461</height>
     </rect>
    </property>
-   <property name="alternatingRowColors">
-    <bool>true</bool>
-   </property>
-   <property name="rowCount">
-    <number>0</number>
-   </property>
-   <property name="columnCount">
-    <number>6</number>
-   </property>
    <column>
     <property name="text">
-     <string>Rank</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Result</string>
+     <string>White Result</string>
     </property>
    </column>
    <column>
@@ -64,12 +76,7 @@
    </column>
    <column>
     <property name="text">
-     <string>Rank</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Result</string>
+     <string>Black Result</string>
     </property>
    </column>
    <column>
@@ -80,38 +87,5 @@
   </widget>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>tournament</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>tournament</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

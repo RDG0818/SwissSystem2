@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "person.h"
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -22,6 +23,7 @@ public:
     QString location;
     QString rounds;
     QString date;
+    std::vector<Person> people;
 
 private slots:
     void on_pushButton_clicked();
