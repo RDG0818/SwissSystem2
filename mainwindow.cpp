@@ -57,10 +57,21 @@ void MainWindow::on_pushButton_2_clicked()
             }
         }
     }
-    for (int i = 0; i < people.size(); i++) {
-        tournament.setCell(i, 1, people[i].getName());
-        tournament.setCell(i, 3, people[people.size() - 1 - i].getName());
+    if (people.size() % 2 == 0) {
+        for (int i = 0; i < people.size(); i++) {
+            tournament.setCell(i, 1, people[i].getName());
+            tournament.setCell(i, 3, people[people.size() - 1 - i].getName());
+        }
     }
+    else {
+        for (int i = 1; i < people.size(); i++) {
+            tournament.setCell(i, 1, people[i].getName());
+            tournament.setCell(i, 3, people[people.size() - i].getName());
+        }
+        tournament.setCell(0, 1, people[0].getName());
+        tournament.setCell(0, 3, "Bye");
+    }
+    tournament.setTotalRound(rounds.toInt());
     tournament.exec();
 }
 

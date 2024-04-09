@@ -2,7 +2,6 @@
 
 Person::Person() {
     this->name = "";
-    this->USCFID = "";
     this->rating = 0;
     this->score = 0;
 }
@@ -39,12 +38,40 @@ string Person::getName() {
     return name;
 }
 
+void Person::updateMatchHistory(int currRound, string result, int matchNum, string color) {
 
-void Person::setUSCFID(string USCFID) {
-    this->USCFID = USCFID;
+    string playerResult;
+    currRound--;
+    playerResult = result + " " + std::to_string(matchNum) + " " + color;
+    if (result == "BYE") {
+        this->matchHistory.at(currRound) = "BYE";
+        this->score += 1;
+    }
+    else if (result == "W"){
+        this->matchHistory.at(currRound) = playerResult;
+        this->score +=1;
+    }
+    else if (result == "D") {
+        this->matchHistory.at(currRound) = playerResult;
+        this->score += 0.5;
+    }
+    else {
+        this->matchHistory.at(currRound) = playerResult;
+    }
 }
 
-string Person::getUSCFID() {
-    return USCFID;
+
+void Person::setMatchHistory(int rounds) {
+    for(int i = 0; i < rounds; i++) {
+        this->matchHistory.push_back("DNE");
+    }
+}
+
+void Person::setCurHistory(std::vector<string> matches) {
+    this->matchHistory = matches;
+}
+
+std::vector<string> Person::getMatchHistory() {
+    return matchHistory;
 }
 

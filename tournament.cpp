@@ -2,6 +2,7 @@
 #include "ui_tournament.h"
 #include "viewtournament.h"
 #include <string>
+using namespace std;
 
 tournament::tournament(QWidget *parent)
     : QDialog(parent)
@@ -15,7 +16,9 @@ tournament::~tournament()
     delete ui;
 }
 
-void tournament::sortRatings(std::vector<Person> &people) {
+
+// ------------------------------------Kevin's stuff--------------------------------------
+void tournament::sortRatings(vector<Person> &people) {
     for(int i = 0; i < people.size() - 1; i++)
     {
         for(int j = 0; j < people.size() - i - 1; j++)
@@ -31,12 +34,12 @@ void tournament::sortRatings(std::vector<Person> &people) {
     }
 }
 
-std::vector<std::vector<Person>> tournament::pigeonHoleSort(int currRound, std::vector<Person> &people) {
+vector<vector<Person>> tournament::pigeonHoleSort(int currRound, vector<Person> &people) {
 
-    std::vector<std::vector<Person>> scores;
+    vector<vector<Person>> scores;
     string vectorName = "";
     for (int i = 0; i < (2 * (currRound-1) ) + 1; i++) {
-        std::vector<Person> scoreAmount;
+        vector<Person> scoreAmount;
         scores.push_back(scoreAmount);
     }
     for(int i = 0; i < people.size(); i++) {
@@ -63,18 +66,202 @@ std::vector<std::vector<Person>> tournament::pigeonHoleSort(int currRound, std::
 
 }
 
+
+void tournament::giveBye(Person &player, int currRound){
+    string result = "BYE";
+    player.updateMatchHistory(currRound, result,0,"");
+}
+
+
+int findRank(vector<Person> people, Person player){
+    int rank = 0;
+    for (int i = 0; i < people.size(); i++) {
+        if (player.getName() == people.at(i).getName()) {
+            rank = i;
+            break;
+        }
+    }
+    return rank + 1 ;
+}
+
+
+bool tournament::conditions(vector<Person> &pair, int currRound, vector<Person> people) {
+    // Same color poggers just swap the players in the pair list
+
+    if (pair.size() != 2) {
+        return true;
+    }
+    if (currRound > 2) {
+        for(int i = 0; i < pair.size(); i++) {
+
+        }
+    }
+
+    // same player
+    for (int i = 0; i < currRound - 1; i++ ) {
+        string playerOneMatch = pair.at(0).getMatchHistory().at(i);
+        string playerTwoMatch = pair.at(1).getMatchHistory().at(i);
+        if (playerOneMatch.at(2) == playerTwoMatch.at(2)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+
+
+
+
+vector<vector<Person>> tournament::createPairings(vector<Person> &people,string tourName, int currRound) {
+    //sorting algorithm for the people vector
+    string csvLine;
+    vector<Person> tempPeople;
+    vector<vector<Person>> scores;
+    vector<vector<Person>> tempScores;
+    vector<vector<Person>> tempTempScores;
+    vector<vector<Person>> matches;
+
+    tempPeople = people;
+    scores = pigeonHoleSort(currRound + 1, people);
+    reverse(scores.begin(),scores.end());
+    tempScores = scores;
+
+
+    //Round one with no conditions are being broken
+    if (currRound == 1) {
+        //This part can be rewritten because ceiling division just doesn't work for some reason
+        int repeats = ceil(tempPeople.size()/2);
+        if (tempPeople.size() % 2 == 1) {
+            repeats++;
+        }
+
+        for (int i = 0; i< repeats; i++) {
+            vector<Person> pairs;
+            Person player;
+            int index = 0;
+            if (tempPeople.size() % 2 == 1) {
+
+                player = scores.at(scores.size()-1).at(0);
+                for (int i = 0; i < people.size(); i++) {
+                    if (player.getName() == people.at(i).getName()) {
+                        index = i;
+                    }
+                }
+                giveBye(people.at(index), currRound);
+                tempPeople.erase(tempPeople.begin());
+
+                continue;
+            }
+            pairs.push_back(tempPeople.at(0));
+            tempPeople.erase(tempPeople.begin());
+            pairs.push_back(tempPeople.at(tempPeople.size()-1));
+            tempPeople.pop_back();
+
+
+
+            matches.push_back(pairs);
+        }
+    }
+
+    else {
+        //tempScores.at(tempScores.size()-1).size() != 0
+
+        int temps = people.size()/2;
+        while(matches.size() != temps) {
+
+
+
+            // iterates through the scores with their respective score starting from the top
+            for (int i = 0; i < tempScores.size(); i++) {
+                //If the score is empty go to the next list of scores
+                if (tempScores.at(i).size() == 0) {
+                    continue;
+                }
+
+                int repeats = ceil(tempScores.at(i).size()/2);
+                if (tempScores.at(i).size() % 2 == 1) {
+                    repeats++;
+                }
+                //iterates throught the players within the list and makes a pair for each person
+                for(int j = 0; j < repeats; j++) {
+                    int firstShift = 0;
+                    vector<Person> pairs;
+                    Person player;
+                    int index = 0;
+
+                    if ((tempScores.at(i).size() == 1) || ((i == tempScores.size()-1) && (tempScores.at(i).size() % 2 == 1))) {
+
+                        if (i == tempScores.size()-1) {
+                            player = scores.at(scores.size()-1).at(0);
+                            for (int k = 0; k < people.size(); k++) {
+                                if (player.getName() == people.at(k).getName()) {
+                                    index = k;
+                                }
+                            }
+                            giveBye(people.at(index), currRound);
+                            tempScores.at(i).erase(tempScores.at(i).begin());
+                            repeats--;
+                            continue;
+                        }
+                        else {
+                            player = tempScores.at(i).at(0);
+
+                            tempScores.at(i+1).push_back(player);
+                            tempScores.at(i).erase(tempScores.at(i).begin());
+
+                            continue;
+                        }
+                    }
+
+
+                    int shift;
+                    while(conditions(pairs,currRound,people)) {
+                        shift = 0;
+                        pairs.clear();
+                        pairs.push_back(tempScores.at(i).at(0));
+                        pairs.push_back(tempScores.at(i).at((tempScores.at(i).size())-1 -firstShift));
+                        while (conditions(pairs,currRound,people)){
+                            pairs.clear();
+                            shift++;
+                            if (shift == (tempScores.at(i).size() -1)) {
+                                firstShift +=1;
+                                j--;
+                                break;
+                            }
+
+                            pairs.push_back(tempScores.at(i).at(0));
+                            pairs.push_back(tempScores.at(i).at(tempScores.at(i).size()-shift));
+
+
+                        }
+
+
+                    }
+                    tempScores.at(i).erase(tempScores.at(i).begin());
+                    tempScores.at(i).erase(tempScores.at(i).begin()+tempScores.at(i).size()-shift-1-firstShift);
+                    matches.push_back(pairs);
+                }
+            }
+        }
+        }
+        return matches;
+    }
+
+ // ------------------------------------Kevin's stuff--------------------------------------
+
 void tournament::on_pushButton_2_clicked()
 {
     viewTournament view;
     view.setPeople(people);
     view.setRows(people.size());
-    std::vector<std::vector<Person>> vectoredPeople = pigeonHoleSort(currentRound + 1, people);
+    vector<vector<Person>> vectoredPeople = pigeonHoleSort(currentRound + 1, people);
 
     for (int i = 0; i < people.size(); i++) {
         view.setCell(i, 0, people[i].getName());
-        view.setCell(i, 1, std::to_string(people[i].getRating()));
+        view.setCell(i, 1, to_string(people[i].getRating()));
         // Truncating decimal
-        string temp = std::to_string(people[i].getScore());
+        string temp = to_string(people[i].getScore());
         view.setCell(i, 2, temp.substr(0, 3));
     }
     view.exec();
@@ -87,23 +274,43 @@ void tournament::on_pushButton_3_clicked() {
     if (people.size() % 2 == 1) {
         loopSize++;
     }
-
+    // Remove scores and add them to the players
     for (int i = 0; i < loopSize; i++) {
         for (int j = 0; j < people.size(); j++) {
             // Check for white player
             if (people[j].getName() == ui->tableWidget->item(i, 1)->text().toStdString()) {
-                people[j].setScore(people[j].getScore() + std::stoi(ui->tableWidget->item(i, 0)->text().toStdString()));
+                people[j].setScore(people[j].getScore() + stoi(ui->tableWidget->item(i, 0)->text().toStdString()));
                 ui->tableWidget->setItem(i, 0, nullptr);
+                ui->tableWidget->setItem(i, 1, nullptr);
             }
             // Check for black player
             if (people[j].getName() == ui->tableWidget->item(i, 3)->text().toStdString()) {
-                people[j].setScore(people[j].getScore() + std::stoi(ui->tableWidget->item(i, 2)->text().toStdString()));
+                people[j].setScore(people[j].getScore() + stoi(ui->tableWidget->item(i, 2)->text().toStdString()));
                 ui->tableWidget->setItem(i, 2, nullptr);
+                ui->tableWidget->setItem(i, 3, nullptr);
+            }
+            // Checks for Bye
+            if ("Bye" == ui->tableWidget->item(i, 3)->text().toStdString()) {
+                ui->tableWidget->setItem(i, 2, nullptr);
+                ui->tableWidget->setItem(i, 3, nullptr);
+            }
+
+            if ("Bye" == ui->tableWidget->item(i, 1)->text().toStdString()) {
+                ui->tableWidget->setItem(i, 0, nullptr);
+                ui->tableWidget->setItem(i, 1, nullptr);
             }
         }
     }
+    // Create the next round pairings and display
+
     currentRound++;
+    if (currentRound < totalRound) {
     QString display = "Current Round: " + QString::number(currentRound);
     ui->label->setText(display);
+    }
+    else if (currentRound == totalRound){
+    QString display = "Final Round";
+    ui->label->setText(display);
+    }
 }
 

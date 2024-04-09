@@ -1,6 +1,7 @@
 #ifndef PERSON_H
 #define PERSON_H
 #include <string>
+#include <vector>
 using std::string;
 
 class Person
@@ -20,16 +21,18 @@ public:
     void setName(string name);
     string getName();
 
-    void setUSCFID(string USCFID);
-    string getUSCFID();
+    void updateMatchHistory(int currRound, string result, int matchNum, string color);
+    void setMatchHistory(int rounds);
+    void setCurHistory(std::vector<string> matches);
 
+    std::vector<string> getMatchHistory();
 
 private:
     int rating;
     string name;
-    string USCFID;
     int score;
-
+    std::vector<string> playablePeople;
+    std::vector<string> matchHistory;
 };
 
 #endif // PERSON_H
