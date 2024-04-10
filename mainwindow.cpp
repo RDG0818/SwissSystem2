@@ -29,6 +29,7 @@ void MainWindow::on_pushButton_clicked()
         string stdname = name.toStdString();
         int stdrating = rating.toInt();
         Person person(stdname, stdrating);
+        person.setMatchHistory(rounds.toInt());
         people.push_back(person);
     }
 

@@ -212,13 +212,29 @@ void tournament::on_pushButton_3_clicked() {
         for (int j = 0; j < people.size(); j++) {
             // Check for white player
             if (people[j].getName() == ui->tableWidget->item(i, 1)->text().toStdString()) {
-                people[j].setScore(people[j].getScore() + stoi(ui->tableWidget->item(i, 0)->text().toStdString()));
+                int result = stoi(ui->tableWidget->item(i, 0)->text().toStdString());
                 ui->tableWidget->setItem(i, 0, nullptr);
+                string strresult = "";
+                if (result == 1) {
+                    strresult = "W";
+                }
+                else if (result == 0.5) {
+                    strresult = "D";
+                }
+                people[j].updateMatchHistory(currentRound, strresult, i, "WH");
             }
             // Check for black player
             if (people[j].getName() == ui->tableWidget->item(i, 3)->text().toStdString()) {
-                people[j].setScore(people[j].getScore() + stoi(ui->tableWidget->item(i, 2)->text().toStdString()));
+                int result = stoi(ui->tableWidget->item(i, 2)->text().toStdString());
                 ui->tableWidget->setItem(i, 2, nullptr);
+                string strresult = "";
+                if (result == 1) {
+                    strresult = "W";
+                }
+                else if (result == 0.5) {
+                    strresult = "D";
+                }
+                people[j].updateMatchHistory(currentRound, strresult, i, "BL");
             }
         }
     }
