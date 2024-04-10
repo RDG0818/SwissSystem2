@@ -22,3 +22,15 @@ QString addPlayerDialog::getRating() const {
     QString rating = ui->lineEdit_2->text();
     return rating;
 }
+
+void addPlayerDialog::on_buttonBox_accepted()
+{
+    accept = true;
+}
+
+
+void addPlayerDialog::on_buttonBox_rejected()
+{
+    accept = false;
+}
+

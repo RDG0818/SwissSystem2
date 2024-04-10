@@ -21,14 +21,16 @@ void MainWindow::on_pushButton_clicked()
 {
     addPlayerDialog window;
     window.exec();
-    QString name = window.getName();
-    QString rating = window.getRating();
-    ui->listWidget->addItem(name);
-    ui->listWidget_2->addItem(rating);
-    string stdname = name.toStdString();
-    int stdrating = rating.toInt();
-    Person person(stdname, stdrating);
-    people.push_back(person);
+    if (window.accept){
+        QString name = window.getName();
+        QString rating = window.getRating();
+        ui->listWidget->addItem(name);
+        ui->listWidget_2->addItem(rating);
+        string stdname = name.toStdString();
+        int stdrating = rating.toInt();
+        Person person(stdname, stdrating);
+        people.push_back(person);
+    }
 
 }
 

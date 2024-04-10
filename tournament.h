@@ -39,7 +39,7 @@ public:
     std::vector<std::vector<Person>> pigeonHoleSort(int currRound, std::vector<Person> &people);
     int findRank(std::vector<Person> people, Person player);
     bool conditions(std::vector<Person> &pair, int currRound, std::vector<Person> people);
-    std::vector<std::vector<Person>> createPairings(std::vector<Person> &people, string tourName, int currRound);
+    std::vector<std::vector<Person>> createPairings(std::vector<Person> &people, int currRound);
 
     ~tournament();
 
