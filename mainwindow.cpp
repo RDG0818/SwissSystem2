@@ -75,6 +75,8 @@ void MainWindow::on_pushButton_2_clicked()
         tournament.setCell(0, 3, "Bye");
     }
     tournament.setTotalRound(rounds.toInt());
+    //Tournament info
+    tournament.setTournamentInfo(tournamentName.toStdString(), organizer.toStdString(), timeControl.toStdString(), location.toStdString(), rounds.toStdString(), date.toStdString());
     tournament.exec();
 }
 

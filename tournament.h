@@ -18,6 +18,7 @@ public:
     std::vector<Person> people;
     int currentRound = 1;
     int totalRound;
+    bool createNewPairings = true;
     void setTotalRound(int num) {
         totalRound = num;
     }
@@ -32,6 +33,24 @@ public:
         QTableWidgetItem *item = new QTableWidgetItem(qdata);
         ui->tableWidget->setItem(row, column, item);
     }
+    void updateButtonState();
+
+    // Tournament Info
+    string tournamentName;
+    string organizer;
+    string timeControl;
+    string location;
+    string rounds;
+    string date;
+    void setTournamentInfo(string tournamentName, string organizer, string timeControl, string location, string rounds, string date) {
+        this->tournamentName = tournamentName;
+        this->organizer = organizer;
+        this->timeControl = timeControl;
+        this->location = location;
+        this->rounds = rounds;
+        this->date = date;
+    }
+
 
     // Kevin's Stuff
     void giveBye(Person &player, int currRound);

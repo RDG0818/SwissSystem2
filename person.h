@@ -30,7 +30,7 @@ public:
 private:
     int rating;
     string name;
-    int score;
+    double score;
     std::vector<string> playablePeople;
     std::vector<string> matchHistory;
 };

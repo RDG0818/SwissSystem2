@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>350</width>
-    <height>550</height>
+    <width>750</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,9 +16,9 @@
   <widget class="QTableWidget" name="tableWidget">
    <property name="geometry">
     <rect>
-     <x>24</x>
+     <x>25</x>
      <y>25</y>
-     <width>302</width>
+     <width>700</width>
      <height>500</height>
     </rect>
    </property>
@@ -46,6 +46,19 @@
      <string>Score</string>
     </property>
    </column>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>325</x>
+     <y>550</y>
+     <width>100</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Create CSV File</string>
+   </property>
   </widget>
  </widget>
  <resources/>

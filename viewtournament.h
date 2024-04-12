@@ -22,13 +22,34 @@ public:
     void setRows(int num) {
         ui->tableWidget->setRowCount(num);
     }
+    void setColumns(int num) {
+        ui->tableWidget->setColumnCount(num);
+    }
     void setCell(int row, int column, string data) {
         QString qdata = QString::fromStdString(data);
          QTableWidgetItem *item = new QTableWidgetItem(qdata);
         ui->tableWidget->setItem(row, column, item);
     }
+    // Tournament Info
+    string tournamentName;
+    string organizer;
+    string timeControl;
+    string location;
+    string rounds;
+    string date;
+    void setTournamentInfo(string tournamentName, string organizer, string timeControl, string location, string rounds, string date) {
+        this->tournamentName = tournamentName;
+        this->organizer = organizer;
+        this->timeControl = timeControl;
+        this->location = location;
+        this->rounds = rounds;
+        this->date = date;
+    }
 
     ~viewTournament();
+
+private slots:
+    void on_pushButton_clicked();
 
 private:
     Ui::viewTournament *ui;

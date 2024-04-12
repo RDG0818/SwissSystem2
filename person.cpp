@@ -1,4 +1,5 @@
 #include "person.h"
+#include <iostream>
 
 Person::Person() {
     this->name = "";

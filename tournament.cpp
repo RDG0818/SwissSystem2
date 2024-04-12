@@ -9,11 +9,34 @@ tournament::tournament(QWidget *parent)
     , ui(new Ui::tournament)
 {
     ui->setupUi(this);
+    // Assuming tableWidget is the name of your QTableWidget object
+
+    connect(ui->tableWidget, &QTableWidget::cellChanged, this, &tournament::updateButtonState);
+
 }
 
 tournament::~tournament()
 {
     delete ui;
+}
+
+void tournament::updateButtonState() {
+    // Count the number of non-empty cells
+    int filledCount = 0;
+    for (int i = 0; i < ui->tableWidget->rowCount(); ++i) {
+        for (int j = 0; j < ui->tableWidget->columnCount(); j += 2) {
+            if (ui->tableWidget->item(i, j) && !ui->tableWidget->item(i, j)->text().isEmpty()) {
+                filledCount++;
+            }
+        }
+    }
+
+    // Enable/disable the button based on the filled cell count
+    if (filledCount >= ui->tableWidget->rowCount() * 2) { // Change 'threshold' to the desired number of filled cells
+        ui->pushButton_3->setEnabled(true);
+    } else {
+        ui->pushButton_3->setEnabled(false);
+    }
 }
 
 // ------------------------------------Kevin's stuff--------------------------------------
@@ -87,6 +110,57 @@ int tournament::findRank(vector<Person> people, Person player){
 bool tournament::conditions(vector<Person> &pair, int currRound, vector<Person> people) {
     // Same color poggers just swap the players in the pair list
 
+    if (pair.size() != 2) {
+        return true;
+    }
+
+    // if (currRound > 2) {
+    //     vector<vector<bool>> pairSameColor(2);
+
+    //     vector<vector<string>> playersHistory;
+
+    //     // gets the history for each person into the player's history vector.
+    //     for(int i = 0; i < pair.size(); i++) {
+    //         playersHistory.push_back(pair.at(i).getMatchHistory());
+    //     }
+    //     for (int i = 0; i < playersHistory.size(); i++) {
+    //         if((playersHistory.at(i).at(currRound -1).at(2) == 'E') || (playersHistory.at(i).at(currRound -2).at(2) == 'E')){
+    //             break;
+    //         }
+    //         char prevColor = playersHistory.at(i).at(currRound -1).at(5);
+    //         char prevPrevColor = playersHistory.at(i).at(currRound -2).at(5);
+
+
+    //         if(prevColor == prevPrevColor) {
+    //             if (prevColor == 'W') {
+    //                 pairSameColor.at(i).at(0) = true;
+    //             }
+    //             else if (prevColor == 'B') {
+    //                 pairSameColor.at(i).at(1) = true;
+    //             }
+    //         }
+    //     }
+    //     for (int i = 0; i < pairSameColor.size(); i++) {
+    //         if (pairSameColor.at(0).at(i) && pairSameColor.at(1).at(i)) {
+    //             return true;
+    //         }
+    //     }
+    // }
+
+
+
+    // same player
+    for (int i = 0; i < currRound - 1; i++ ) {
+        string playerOneMatch = pair.at(0).getMatchHistory().at(i);
+        string playerTwoMatch = pair.at(1).getMatchHistory().at(i);
+        if(playerOneMatch.at(2) == 'E') {
+            break;
+        }
+        \
+            if (playerOneMatch.at(2) == playerTwoMatch.at(2)) {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -102,36 +176,55 @@ vector<vector<Person>> tournament::createPairings(vector<Person> &people, int cu
     vector<vector<Person>> tempScores;
     vector<vector<Person>> tempTempScores;
     vector<vector<Person>> matches;
+    vector<vector<vector<Person>>> scoresHistory;
+    int prevShift = 0;
+    int count =0;
 
     tempPeople = people;
-    scores = pigeonHoleSort(currRound + 1, people);
+    scores = pigeonHoleSort(currRound + 2, people);
     reverse(scores.begin(),scores.end());
     tempScores = scores;
 
-    //tempScores.at(tempScores.size()-1).size() != 0
+    //Round one with no conditions are being broken
 
     int temps = people.size()/2;
     while(matches.size() != temps) {
+        int firstShift = 0;
+
+
         // iterates through the scores with their respective score starting from the top
         for (int i = 0; i < tempScores.size(); i++) {
+
             //If the score is empty go to the next list of scores
             if (tempScores.at(i).size() == 0) {
                 continue;
             }
-
             int repeats = tempScores.at(i).size()/2;
             if (tempScores.at(i).size() % 2 == 1) {
                 repeats++;
             }
+            if (firstShift == (tempScores.at(i).size()-1)) {
+                Person player = tempScores.at(i).at(tempScores.at(i).size()-1);
+                tempScores.at(i+1).push_back(player);
+                tempScores.at(i).erase(tempScores.at(i).begin()+tempScores.at(i).size()-1);
+                firstShift = 0;
+                i-=2;
+                continue;
+
+
+            }
+
+
+            count++;
+            //if (count==20) scoresHistory.at(2837456);
             //iterates throught the players within the list and makes a pair for each person
             for(int j = 0; j < repeats; j++) {
-                int firstShift = 0;
                 vector<Person> pairs;
                 Person player;
                 int index = 0;
+                bool noPairsExist = false;
 
                 if ((tempScores.at(i).size() == 1) || ((i == tempScores.size()-1) && (tempScores.at(i).size() % 2 == 1))) {
-
                     if (i == tempScores.size()-1) {
                         player = scores.at(scores.size()-1).at(0);
                         for (int k = 0; k < people.size(); k++) {
@@ -141,7 +234,6 @@ vector<vector<Person>> tournament::createPairings(vector<Person> &people, int cu
                         }
                         giveBye(people.at(index), currRound);
                         tempScores.at(i).erase(tempScores.at(i).begin());
-                        repeats--;
                         continue;
                     }
                     else {
@@ -154,34 +246,83 @@ vector<vector<Person>> tournament::createPairings(vector<Person> &people, int cu
                     }
                 }
 
-            int shift;
-                shift = 0;
-                pairs.clear();
-                pairs.push_back(tempScores.at(i).at(0));
-                pairs.push_back(tempScores.at(i).at((tempScores.at(i).size())-1 -firstShift));
-                while (conditions(pairs,currRound,people)){
+
+                int shift;
+                while(conditions(pairs,currRound,people)) {
+                    shift = 0;
                     pairs.clear();
-                    shift++;
-                    if (shift == (tempScores.at(i).size() -1)) {
-                        firstShift +=1;
-                        j--;
+                    pairs.push_back(tempScores.at(i).at(0));
+                    pairs.push_back(tempScores.at(i).at((tempScores.at(i).size())-1 -firstShift));
+
+
+                    while (conditions(pairs,currRound,people)){
+                        pairs.clear();
+                        shift++;
+                        pairs.push_back(tempScores.at(i).at(0));
+                        pairs.push_back(tempScores.at(i).at(tempScores.at(i).size()-shift-firstShift));
+                        if (!conditions(pairs,currRound,people)) {
+                            break;
+                        }
+                        if (shift == (tempScores.at(i).size() -1) || (shift + firstShift == (tempScores.at(i).size()-1))){
+
+                            if (prevShift >= tempScores.at(i).size()) {
+                                Person player = tempScores.at(i).at(tempScores.at(i).size()-1);
+                                tempScores.at(i+1).push_back(player);
+                                tempScores.at(i).erase(tempScores.at(i).begin()+tempScores.at(i).size()-1);
+                                player = tempScores.at(i).at(tempScores.at(i).size()-1);
+                                tempScores.at(i+1).push_back(player);
+                                tempScores.at(i).erase(tempScores.at(i).begin()+tempScores.at(i).size()-1);
+                                repeats--;
+                                noPairsExist = true;
+                                break;
+                            }
+                            if (scoresHistory.size() != 0) {
+                                tempScores = scoresHistory.at(scoresHistory.size()-1);
+                                scoresHistory.pop_back();
+                                matches.pop_back();
+                            }
+                            noPairsExist = true;
+                            firstShift +=1;
+                            i =0;
+                            break;
+                        }
+
+
+                    }
+
+
+                    if (noPairsExist) {
                         break;
                     }
 
-                    pairs.push_back(tempScores.at(i).at(0));
-                    pairs.push_back(tempScores.at(i).at(tempScores.at(i).size()-shift));
-
-
                 }
 
+
+                if ((prevShift > 0)&& (noPairsExist)) {
+                    continue;
+                }
+                if (noPairsExist){
+                    break;
+                }
+
+
+                scoresHistory.push_back(tempScores);
                 tempScores.at(i).erase(tempScores.at(i).begin());
+                prevShift = shift + firstShift;
+                if (shift > 0)shift--;
                 tempScores.at(i).erase(tempScores.at(i).begin()+tempScores.at(i).size()-shift-1-firstShift);
                 matches.push_back(pairs);
+                if (firstShift > 0) {
+                    firstShift = 0;
+                }
+
             }
         }
     }
     return matches;
 }
+
+
 
 // ------------------------------------Kevin's stuff--------------------------------------
 
@@ -190,6 +331,7 @@ void tournament::on_pushButton_2_clicked()
     viewTournament view;
     view.setPeople(people);
     view.setRows(people.size());
+    view.setColumns(3 + totalRound);
     vector<vector<Person>> vectoredPeople = pigeonHoleSort(currentRound + 1, people);
 
     for (int i = 0; i < people.size(); i++) {
@@ -198,11 +340,16 @@ void tournament::on_pushButton_2_clicked()
         // Truncating decimal
         string temp = to_string(people[i].getScore());
         view.setCell(i, 2, temp.substr(0, 3));
+        for (int j = 3; j < totalRound + 3; j++) {
+            view.setCell(i, j, people[i].getMatchHistory()[j - 3]);
+        }
     }
+    view.setTournamentInfo(tournamentName, organizer, timeControl, location, rounds, date);
     view.exec();
 }
 
 void tournament::on_pushButton_3_clicked() {
+
     int loopSize = people.size() / 2;
     if (people.size() % 2 == 1) {
         loopSize++;
@@ -212,7 +359,7 @@ void tournament::on_pushButton_3_clicked() {
         for (int j = 0; j < people.size(); j++) {
             // Check for white player
             if (people[j].getName() == ui->tableWidget->item(i, 1)->text().toStdString()) {
-                int result = stoi(ui->tableWidget->item(i, 0)->text().toStdString());
+                double result = stod(ui->tableWidget->item(i, 0)->text().toStdString());
                 ui->tableWidget->setItem(i, 0, nullptr);
                 string strresult = "";
                 if (result == 1) {
@@ -221,11 +368,14 @@ void tournament::on_pushButton_3_clicked() {
                 else if (result == 0.5) {
                     strresult = "D";
                 }
-                people[j].updateMatchHistory(currentRound, strresult, i, "WH");
+                else {
+                    strresult = "L";
+                }
+                people[j].updateMatchHistory(currentRound, strresult, i + 1, "WH");
             }
             // Check for black player
             if (people[j].getName() == ui->tableWidget->item(i, 3)->text().toStdString()) {
-                int result = stoi(ui->tableWidget->item(i, 2)->text().toStdString());
+                double result = stod(ui->tableWidget->item(i, 2)->text().toStdString());
                 ui->tableWidget->setItem(i, 2, nullptr);
                 string strresult = "";
                 if (result == 1) {
@@ -234,14 +384,20 @@ void tournament::on_pushButton_3_clicked() {
                 else if (result == 0.5) {
                     strresult = "D";
                 }
-                people[j].updateMatchHistory(currentRound, strresult, i, "BL");
+                else {
+                    strresult = "L";
+                }
+                people[j].updateMatchHistory(currentRound, strresult, i + 1, "BL");
             }
         }
     }
     // Create the next round pairings and display
 
     currentRound++;
-    vector<vector<Person>> vectoredPeople = createPairings(people, currentRound);
+    vector<vector<Person>> vectoredPeople;
+    if (createNewPairings) {
+        vectoredPeople = createPairings(people, currentRound);
+    }
 
     for (int i = 0; i < vectoredPeople.size(); i++) {
         if (currentRound % 2 == 1) {
@@ -253,6 +409,7 @@ void tournament::on_pushButton_3_clicked() {
             setCell(i, 1, vectoredPeople[i][1].getName());
         }
     }
+
     if (currentRound < totalRound) {
         QString display = "Current Round: " + QString::number(currentRound);
         ui->label->setText(display);
@@ -262,9 +419,13 @@ void tournament::on_pushButton_3_clicked() {
         QString buttonText = "Enter Final Scores";
         ui->label->setText(display);
         ui->pushButton_3->setText(buttonText);
+        createNewPairings = false;
     }
     else {
         ui->pushButton_3->setEnabled(false);
+        for (int i = 0; i < ui->tableWidget->rowCount(); i++) {
+        ui->tableWidget->clear();
+        }
     }
 }
 
