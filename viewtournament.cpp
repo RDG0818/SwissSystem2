@@ -16,8 +16,18 @@ viewTournament::~viewTournament()
     delete ui;
 }
 
-void viewTournament::on_pushButton_clicked()
-{
+void viewTournament::on_pushButton_clicked() {
     ofstream csv(tournamentName + ".csv");
+    if (!csv.is_open()) {
+        cout << "Could not open file" << endl;
+        return;
+    }
+    for (int i = 0; i < ui->tableWidget->rowCount(); i++) {
+        for (int j = 0; j < ui->tableWidget->columnCount(); j++) {
+            csv << ui->tableWidget->item(i, j)->text().toStdString() << ",";
+        }
+        csv << endl;
+    }
+    csv.close();
 }
 

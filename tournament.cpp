@@ -108,48 +108,55 @@ int tournament::findRank(vector<Person> people, Person player){
 
 
 bool tournament::conditions(vector<Person> &pair, int currRound, vector<Person> people) {
-    // Same color poggers just swap the players in the pair list
-
     if (pair.size() != 2) {
         return true;
     }
 
-    // if (currRound > 2) {
-    //     vector<vector<bool>> pairSameColor(2);
+    if (currRound > 2) {
+        vector<vector<bool>> pairSameColor;
+        vector<vector<string>> playersHistory;
 
-    //     vector<vector<string>> playersHistory;
-
-    //     // gets the history for each person into the player's history vector.
-    //     for(int i = 0; i < pair.size(); i++) {
-    //         playersHistory.push_back(pair.at(i).getMatchHistory());
-    //     }
-    //     for (int i = 0; i < playersHistory.size(); i++) {
-    //         if((playersHistory.at(i).at(currRound -1).at(2) == 'E') || (playersHistory.at(i).at(currRound -2).at(2) == 'E')){
-    //             break;
-    //         }
-    //         char prevColor = playersHistory.at(i).at(currRound -1).at(5);
-    //         char prevPrevColor = playersHistory.at(i).at(currRound -2).at(5);
-
-
-    //         if(prevColor == prevPrevColor) {
-    //             if (prevColor == 'W') {
-    //                 pairSameColor.at(i).at(0) = true;
-    //             }
-    //             else if (prevColor == 'B') {
-    //                 pairSameColor.at(i).at(1) = true;
-    //             }
-    //         }
-    //     }
-    //     for (int i = 0; i < pairSameColor.size(); i++) {
-    //         if (pairSameColor.at(0).at(i) && pairSameColor.at(1).at(i)) {
-    //             return true;
-    //         }
-    //     }
-    // }
+        // gets the history for each person into the player's history vector.
+        for(int i = 0; i < pair.size(); i++) {
+            playersHistory.push_back(pair.at(i).getMatchHistory());
+        }
+        for (int i = 0; i < playersHistory.size(); i++) {
+            vector<bool> sameColor;
+            sameColor.push_back(false);
+            sameColor.push_back(false);
+            if((playersHistory.at(i).at(currRound -2) == "BYE") || (playersHistory.at(i).at(currRound -3) == "BYE")){
+                pairSameColor.push_back(sameColor);
+                continue;
+            }
+            char prevColor = playersHistory.at(i).at(currRound -2).at(5);
+            char prevPrevColor = playersHistory.at(i).at(currRound -3).at(5);
 
 
+            if(prevColor == prevPrevColor) {
+                if (prevColor == 'W') {
+                    sameColor.at(0) = true;
+                }
+                else if (prevColor == 'B') {
+                    sameColor.at(1) = true;
+                }
+            }
+            pairSameColor.push_back(sameColor);
+        }
+        for (int i = 0; i < pairSameColor.size(); i++) {
+            if ((pairSameColor.at(0).at(i)) && (pairSameColor.at(1).at(i))) {
+                return true;
+            }
+        }
 
+        //Write the code for swapping the two colors
+        for (int i = 0; i < pairSameColor.size(); i++) {
+            if (pairSameColor.at(i).at(i)) {
+                reverse(pair.begin(), pair.end());
+            }
+        }
+    }
     // same player
+
     for (int i = 0; i < currRound - 1; i++ ) {
         string playerOneMatch = pair.at(0).getMatchHistory().at(i);
         string playerTwoMatch = pair.at(1).getMatchHistory().at(i);
@@ -171,16 +178,13 @@ bool tournament::conditions(vector<Person> &pair, int currRound, vector<Person> 
 
 vector<vector<Person>> tournament::createPairings(vector<Person> &people, int currRound) {
     //sorting algorithm for the people vector
-    vector<Person> tempPeople;
     vector<vector<Person>> scores;
     vector<vector<Person>> tempScores;
-    vector<vector<Person>> tempTempScores;
     vector<vector<Person>> matches;
     vector<vector<vector<Person>>> scoresHistory;
     int prevShift = 0;
     int count =0;
 
-    tempPeople = people;
     scores = pigeonHoleSort(currRound + 2, people);
     reverse(scores.begin(),scores.end());
     tempScores = scores;
@@ -203,22 +207,17 @@ vector<vector<Person>> tournament::createPairings(vector<Person> &people, int cu
             if (tempScores.at(i).size() % 2 == 1) {
                 repeats++;
             }
-            if (firstShift == (tempScores.at(i).size()-1)) {
+            if ((firstShift == (tempScores.at(i).size()-1)) && (i != tempScores.size()-1)) {
                 Person player = tempScores.at(i).at(tempScores.at(i).size()-1);
                 tempScores.at(i+1).push_back(player);
                 tempScores.at(i).erase(tempScores.at(i).begin()+tempScores.at(i).size()-1);
                 firstShift = 0;
                 i-=2;
                 continue;
-
-
             }
 
-
-            count++;
-            //if (count==20) scoresHistory.at(2837456);
-            //iterates throught the players within the list and makes a pair for each person
             for(int j = 0; j < repeats; j++) {
+
                 vector<Person> pairs;
                 Person player;
                 int index = 0;
@@ -226,13 +225,16 @@ vector<vector<Person>> tournament::createPairings(vector<Person> &people, int cu
 
                 if ((tempScores.at(i).size() == 1) || ((i == tempScores.size()-1) && (tempScores.at(i).size() % 2 == 1))) {
                     if (i == tempScores.size()-1) {
-                        player = scores.at(scores.size()-1).at(0);
+
+
+                        player = tempScores.at(tempScores.size()-1).at(0);
                         for (int k = 0; k < people.size(); k++) {
                             if (player.getName() == people.at(k).getName()) {
                                 index = k;
                             }
                         }
                         giveBye(people.at(index), currRound);
+
                         tempScores.at(i).erase(tempScores.at(i).begin());
                         continue;
                     }
@@ -253,8 +255,6 @@ vector<vector<Person>> tournament::createPairings(vector<Person> &people, int cu
                     pairs.clear();
                     pairs.push_back(tempScores.at(i).at(0));
                     pairs.push_back(tempScores.at(i).at((tempScores.at(i).size())-1 -firstShift));
-
-
                     while (conditions(pairs,currRound,people)){
                         pairs.clear();
                         shift++;
@@ -287,16 +287,13 @@ vector<vector<Person>> tournament::createPairings(vector<Person> &people, int cu
                             break;
                         }
 
-
                     }
-
 
                     if (noPairsExist) {
                         break;
                     }
 
                 }
-
 
                 if ((prevShift > 0)&& (noPairsExist)) {
                     continue;
@@ -315,11 +312,12 @@ vector<vector<Person>> tournament::createPairings(vector<Person> &people, int cu
                 if (firstShift > 0) {
                     firstShift = 0;
                 }
-
             }
         }
     }
+
     return matches;
+
 }
 
 

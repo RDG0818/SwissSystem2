@@ -44,7 +44,10 @@ void MainWindow::on_pushButton_2_clicked()
         tournament.setRows(people.size() / 2);
     }
     else {
-        tournament.setRows((people.size() / 2) + 1);
+        Person byePerson = Person("BYE", 0);
+        byePerson.setMatchHistory(rounds.toInt());
+        people.push_back(byePerson);
+        tournament.setRows(people.size() / 2);
     }
     // Sorting Algo
     for(int i = 0; i < people.size() - 1; i++)
@@ -60,20 +63,13 @@ void MainWindow::on_pushButton_2_clicked()
             }
         }
     }
-    if (people.size() % 2 == 0) {
-        for (int i = 0; i < people.size(); i++) {
-            tournament.setCell(i, 1, people[i].getName());
-            tournament.setCell(i, 3, people[people.size() - 1 - i].getName());
-        }
+
+    // Make first round pairings
+    for (int i = 0; i < people.size(); i++) {
+        tournament.setCell(i, 1, people[i].getName());
+        tournament.setCell(i, 3, people[people.size() - 1 - i].getName());
     }
-    else {
-        for (int i = 1; i < people.size(); i++) {
-            tournament.setCell(i, 1, people[i].getName());
-            tournament.setCell(i, 3, people[people.size() - i].getName());
-        }
-        tournament.setCell(0, 1, people[0].getName());
-        tournament.setCell(0, 3, "Bye");
-    }
+
     tournament.setTotalRound(rounds.toInt());
     //Tournament info
     tournament.setTournamentInfo(tournamentName.toStdString(), organizer.toStdString(), timeControl.toStdString(), location.toStdString(), rounds.toStdString(), date.toStdString());
